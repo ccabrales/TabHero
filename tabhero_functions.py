@@ -11,11 +11,11 @@ rejected_types = ['tab pro', 'video lesson', 'guitar pro', 'power tab']
 # Class that will act as an individual tab result
 class TabResult():
 	def __init__(self, artist, title, tab_id, rating, tab_type, url):
-		self.artist = artist
-		self.title = title
+		self.artist = artist.encode('utf-8')
+		self.title = title.encode('utf-8')
 		self.tab_id = tab_id
 		self.rating = rating
-		self.tab_type = tab_type
+		self.tab_type = tab_type.encode('utf-8')
 		self.url = url
 
 	# Formats the tab output for printing to terminal or writing to file
@@ -55,7 +55,7 @@ def tabs_search(query):
 		for row in rows:
 			artist = row.find('a', class_="song search_art")
 			if artist:
-				curr_artist = artist.text
+				curr_artist = artist.text.strip()
 
 			tab_type = row.find('strong')
 			if tab_type and tab_type.text not in rejected_types:
@@ -64,7 +64,7 @@ def tabs_search(query):
 			else:
 				continue
 
-			title = row.find('a', class_="song result-link").text.encode('utf-8')
+			title = row.find('a', class_="song result-link").text.strip().encode('utf-8')
 			tab_id = total_count
 			rating = len(row.find_all('span', class_="icon-rating-sm icon-rating-sm__active"))
 			url = row.find('a', class_="song result-link")['href']
