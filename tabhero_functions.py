@@ -46,8 +46,6 @@ def tabs_search(query):
 		tabs_soup = BeautifulSoup(page.text, 'lxml')
 		results_table = tabs_soup.find('table', class_="tresults")
 
-		artists = results_table.find_all('a', class_="song search_art") #Get artists inside the results table
-
 		rows = results_table.find_all('tr') # All the results rows in the table
 		# Now comes the fun part.
 		# Only consume and care about results that are chords, tab, bass, ukelele chords, drums.
@@ -87,7 +85,10 @@ def tabs_search(query):
 	return results
 
 def get_tab_from_url(url):
-	return 'This is a test'
+	page = requests.get(url)
+	tab_soup = BeautifulSoup(page.text, 'lxml')
+	tab_content = tab_soup.find('div', class_="tb_ct").text
+	return tab_content
 
 def choose_from_results(results):
 	for i in range(len(results)):

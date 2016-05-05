@@ -36,11 +36,11 @@ if __name__ == '__main__':
 	else:
 		tab_choice = search_results[0]
 
-	formatted_tab = tab_choice.format_tab_output()
+	formatted_tab = tab_choice.format_tab_output().strip()
 
 	# Print the tab to command line or download by default
 	if args.print_tab is True:
-		print('\n' + formatted_tab,)
+		print('\n' + formatted_tab)
 	else:
 		filename = os.path.join(args.output_dir, tab_choice.generate_filename())
 		dirname = os.path.dirname(filename)
