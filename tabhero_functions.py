@@ -11,16 +11,16 @@ rejected_types = ['tab pro', 'video lesson', 'guitar pro', 'power tab']
 # Class that will act as an individual tab result
 class TabResult():
 	def __init__(self, artist, title, tab_id, rating, tab_type, url):
-		self.artist = artist.encode('utf-8')
-		self.title = title.encode('utf-8')
+		self.artist = artist
+		self.title = title
 		self.tab_id = tab_id
 		self.rating = rating
-		self.tab_type = tab_type.encode('utf-8')
+		self.tab_type = tab_type
 		self.url = url
 
 	# Formats the tab output for printing to terminal or writing to file
 	def format_tab_output(self):
-		header = '{} - {}'.format(self.artist, self.title).encode('utf-8')
+		header = '{} - {}'.format(self.artist, self.title)
 		spacer = ('-' * (len(header))).encode('utf-8')
 		tab = get_tab_from_url(self.url).encode('utf-8')
 
@@ -56,11 +56,11 @@ def tabs_search(query):
 		for row in rows:
 			artist = row.find('a', class_="song search_art")
 			if artist:
-				curr_artist = artist.text.strip()
+				curr_artist = artist.text.strip().encode('utf-8')
 
 			tab_type = row.find('strong')
 			if tab_type and tab_type.text not in rejected_types:
-				tab_type = tab_type.text
+				tab_type = tab_type.text.encode('utf-8')
 				total_count += 1
 			else:
 				continue
@@ -71,6 +71,10 @@ def tabs_search(query):
 			url = row.find('a', class_="song result-link")['href']
 
 			results.append(TabResult(curr_artist, title, tab_id, rating, tab_type, url))
+
+		if total_count == 0:
+			print("No results found.")
+			sys.exit(1)
 
 
 	elif 500 > page.status_code >= 400:
