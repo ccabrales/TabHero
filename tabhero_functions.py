@@ -73,7 +73,10 @@ def tabs_search(query):
 
 
 	elif 500 > page.status_code >= 400:
-		print("[error] Something went wrong with the request that shouldn't have")
+		if page.status_code == 404:
+			print("No results found.")
+		else:
+			print("[error] Something went wrong with the request that shouldn't have")
 		sys.exit(1)
 
 
