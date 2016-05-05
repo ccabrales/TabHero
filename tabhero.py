@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 
 if __name__ == '__main__':
-	query = ' '.join(args.query)
+	query = '+'.join(args.query)
 	search_results = tabs_search(query)
 
 	# Allow the user to choose from the results, or pick the first result by default
