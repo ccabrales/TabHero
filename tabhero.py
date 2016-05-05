@@ -8,7 +8,6 @@ from tabhero_functions import *
 parser = argparse.ArgumentParser(description="View and download guitar tabs from ultimate-guitar.com to the current directory")
 parser.add_argument('query', metavar='query', nargs='+',
 					help='Query song or artist to search on ultimate-guitar.com')
-#maybe remove this in future
 parser.add_argument('-p', '--print_tab',
 					action='store_true', default=False,
 					help='Print the resulting tab to console instead of downloading directly.')
@@ -36,6 +35,7 @@ def perform_search(raw_query, select, print_tab, output_dir):
 	else:
 		tab_choice = search_results[0]
 
+	print('Downloading tab...\n')
 	formatted_tab = tab_choice.format_tab_output().strip()
 
 	# Print the tab to command line or download by default
@@ -53,6 +53,7 @@ def perform_search(raw_query, select, print_tab, output_dir):
 				if exc.errno != errno.EEXIST:
 					raise
 
+		print('Writing to file...')
 		with open(filename, 'w') as f:
 			try:
 				f.write(bytes(formatted_tab, 'UTF-8'))

@@ -35,6 +35,7 @@ class TabResult():
 
 # Major function that performs the actual search and returns the results it found
 def tabs_search(query):
+	print('Searching...\n')
 	results = []
 
 	ultimate_guitar = 'https://www.ultimate-guitar.com'
