@@ -104,7 +104,7 @@ def choose_from_results(results):
 	while choice < 1 or choice > len(results):
 		try:
 			choice = int(input('\nSelect a tab number: '))
-		except ValueError:
+		except (NameError, ValueError, SyntaxError):
 			print('[error] Please enter a valid number!')
 
 	return results[choice - 1]
