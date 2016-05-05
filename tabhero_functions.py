@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import lxml
 import requests
 
+# Types that won't be considered
 rejected_types = ['tab pro', 'video lesson', 'guitar pro', 'power tab']
 
 # Class that will act as an individual tab result
@@ -14,7 +15,7 @@ class TabResult():
 		self.title = title
 		self.tab_id = tab_id
 		self.rating = rating
-		self.type = tab_type
+		self.tab_type = tab_type
 		self.url = url
 
 	# Formats the tab output for printing to terminal or writing to file
@@ -28,7 +29,8 @@ class TabResult():
 
 	# Generates a file name for the tab as a text file
 	def generate_filename(self):
-		return self.artist + '-' + self.title + '-' + self.tab_id + '.txt'
+		return '{} - {} -.txt'.format(self.artist, self.title, self.tab_id)
+		# return self.artist + '-' + self.title + '-' + str(self.tab_id) + '.txt'
 
 
 # Major function that performs the actual search and returns the results it found
@@ -64,8 +66,8 @@ def tabs_search(query):
 			else:
 				continue
 
-			title = row.find('a', class_="song result-link").text
-			tab_id = str(total_count)
+			title = row.find('a', class_="song result-link").text.replace(u'\xa0', u' ')
+			tab_id = total_count
 			rating = len(row.find_all('span', class_="icon-rating-sm icon-rating-sm__active"))
 			url = row.find('a', class_="song result-link")['href']
 
@@ -90,7 +92,7 @@ def get_tab_from_url(url):
 def choose_from_results(results):
 	for i in range(len(results)):
 		curr_result = results[i]
-		result_text = '[{}] {} - {} - {}/5 - {}'.format(i + 1, curr_result.artist, curr_result.title, curr_result.rating, curr_result.type)
+		result_text = '[{}] {} - {} - {}/5 - {}'.format(i + 1, curr_result.artist, curr_result.title, curr_result.rating, curr_result.tab_type)
 		print(result_text)
 
 	choice = 0
