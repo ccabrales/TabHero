@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+import sys
 from bs4 import BeautifulSoup
-from lxml import html
+import lxml
 import requests
+
+rejected_types = ['tab pro', 'video lesson', 'guitar pro', 'power tab']
 
 # Class that will act as an individual tab result
 class TabResult():
@@ -28,6 +31,7 @@ class TabResult():
 		return self.artist + '-' + self.title + '-' + self.tab_id + '.txt'
 
 
+# Major function that performs the actual search and returns the results it found
 def tabs_search(query):
 	results = []
 
@@ -35,12 +39,53 @@ def tabs_search(query):
 	endpoint = ultimate_guitar + '/search.php?search_type=title&order=&value=' + query
 
 	page = requests.get(endpoint)
-	tree = html.fromstring(page.content)
+
+	if page.status_code == 200:
+		tabs_soup = BeautifulSoup(page.text, 'lxml')
+		results_table = tabs_soup.find('table', class_="tresults")
+
+		artists = results_table.find_all('a', class_="song search_art") #Get artists inside the results table
+
+		rows = results_table.find_all('tr') # All the results rows in the table
+		# Now comes the fun part.
+		# Only consume and care about results that are chords, tab, bass, ukelele chords, drums.
+		# Do NOT keep tabs pro, video lesson, or guitar pro types.
+		total_count = 0
+		curr_artist = None
+		for row in rows:
+			artist = row.find('a', class_="song search_art")
+			if artist:
+				curr_artist = artist.text
+
+			tab_type = row.find('strong')
+			if tab_type and tab_type.text not in rejected_types:
+				tab_type = tab_type.text
+				total_count += 1
+			else:
+				continue
+
+			title = row.find('a', class_="song result-link").text
+			tab_id = str(total_count)
+			rating = len(row.find_all('span', class_="icon-rating-sm icon-rating-sm__active"))
+			url = row.find('a', class_="song result-link")['href']
+
+			results.append(TabResult(curr_artist, title, tab_id, rating, tab_type, url))
+
+
+	elif 500 > page.status_code >= 400:
+		print("[error] Something went wrong with the request that shouldn't have")
+		sys.exit(1)
+
+
+	elif page.status_code >= 500:
+		print('[error] Looks like ultimate-guitar is having trouble fulfilling the request.')
+		print('[error] Try again in a bit or check if the site is up right now.')
+		sys.exit(1)
 
 	return results
 
 def get_tab_from_url(url):
-	return None
+	return 'This is a test'
 
 def choose_from_results(results):
 	for i in range(len(results)):
@@ -49,10 +94,10 @@ def choose_from_results(results):
 		print(result_text)
 
 	choice = 0
-	while choice < 1 or choice > len(results)
+	while choice < 1 or choice > len(results):
 		try:
 			choice = int(input('\nSelect a tab number: '))
 		except ValueError:
-			print('Please enter a valid number!')
+			print('[error] Please enter a valid number!')
 
 	return results[choice - 1]
