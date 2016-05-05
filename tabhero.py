@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 import argparse
 from tabhero_functions import *
 
@@ -14,6 +15,9 @@ parser.add_argument('-p', '--print_tab',
 parser.add_argument('-s', '--select',
 					action='store_true', default=False,
 					help='Show top results found without automatic selection and choose among them.')
+parser.add_argument('-o', '--output-dir',
+					nargs='?', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tabs'),
+					help='Specify the output directory for saving tabs. Defaults to tabs')
 
 if len(sys.argv) < 2:
 	parser.print_help()
@@ -36,9 +40,19 @@ if __name__ == '__main__':
 
 	# Print the tab to command line or download by default
 	if args.print_tab is True:
-		print ('\n' + formatted_tab,)
+		print('\n' + formatted_tab,)
 	else:
-		filename = tab_choice.generate_filename()
+		filename = os.path.join(args.output_dir, tab_choice.generate_filename())
+		dirname = os.path.dirname(filename)
+
+		# Referenced http://stackoverflow.com/a/12517490
+		if dirname != '' and not os.path.exists(dirname):
+			try:
+				os.makedirs(dirname)
+			except OSError as exc:
+				if exc.errno != errno.EEXIST:
+					raise
+
 		with open(filename, 'w') as f:
 			try:
 				f.write(bytes(formatted_tab, 'UTF-8'))
