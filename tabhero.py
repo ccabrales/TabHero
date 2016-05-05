@@ -25,13 +25,13 @@ if len(sys.argv) < 2:
 
 args = parser.parse_args()
 
-
-if __name__ == '__main__':
-	query = '+'.join(args.query)
+# Performs the entire search and selection. Ends by writing to file or stdout.
+def perform_search(raw_query, select, print_tab, output_dir):
+	query = '+'.join(raw_query)
 	search_results = tabs_search(query)
 
 	# Allow the user to choose from the results, or pick the first result by default
-	if args.select is True:
+	if select is True:
 		tab_choice = choose_from_results(search_results)
 	else:
 		tab_choice = search_results[0]
@@ -39,10 +39,10 @@ if __name__ == '__main__':
 	formatted_tab = tab_choice.format_tab_output().strip()
 
 	# Print the tab to command line or download by default
-	if args.print_tab is True:
+	if print_tab is True:
 		print('\n' + formatted_tab)
 	else:
-		filename = os.path.join(args.output_dir, tab_choice.generate_filename())
+		filename = os.path.join(output_dir, tab_choice.generate_filename())
 		dirname = os.path.dirname(filename)
 
 		# Referenced http://stackoverflow.com/a/12517490
@@ -58,3 +58,8 @@ if __name__ == '__main__':
 				f.write(bytes(formatted_tab, 'UTF-8'))
 			except TypeError:
 				f.write(bytes(formatted_tab))
+
+
+
+if __name__ == '__main__':
+	perform_search(args.query, args.select, args.print_tab, args.output_dir)
