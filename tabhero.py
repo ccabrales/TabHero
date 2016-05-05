@@ -16,7 +16,7 @@ parser.add_argument('-s', '--select',
 					help='Show top results found without automatic selection and choose among them.')
 parser.add_argument('-o', '--output-dir',
 					nargs='?', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tabs'),
-					help='Specify the output directory for saving tabs. Defaults to tabs')
+					help='Specify the output directory for saving tabs. Defaults to tabs/')
 
 if len(sys.argv) < 2:
 	parser.print_help()
