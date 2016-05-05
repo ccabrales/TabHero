@@ -20,9 +20,9 @@ class TabResult():
 
 	# Formats the tab output for printing to terminal or writing to file
 	def format_tab_output(self):
-		header = '{} - {}'.format(self.artist, self.title)
-		spacer = '-' * (len(header))
-		tab = get_tab_from_url(self.url)
+		header = '{} - {}'.format(self.artist, self.title).encode('utf-8')
+		spacer = ('-' * (len(header))).encode('utf-8')
+		tab = get_tab_from_url(self.url).encode('utf-8')
 
 		tab_output = '{}\n{}\n{}\n'.format(header, spacer, tab)
 		return tab_output
@@ -64,7 +64,7 @@ def tabs_search(query):
 			else:
 				continue
 
-			title = row.find('a', class_="song result-link").text.replace(u'\xa0', u' ')
+			title = row.find('a', class_="song result-link").text.encode('utf-8')
 			tab_id = total_count
 			rating = len(row.find_all('span', class_="icon-rating-sm icon-rating-sm__active"))
 			url = row.find('a', class_="song result-link")['href']
